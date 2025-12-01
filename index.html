@@ -185,7 +185,54 @@
     <!--  GOOGLE LOGIN SCRIPT -->
     <!-- ----------------------------------------------------------- -->
     <script>
-          <!-- Features Section -->
+          
+        // Handle Google login response
+        function handleCredentialResponse(response) {
+            const data = JSON.parse(atob(response.credential.split('.')[1]));
+            localStorage.setItem("user", JSON.stringify(data));
+            showUserProfile();
+        }
+
+        // Show user profile in navbar
+        function showUserProfile() {
+            const user = JSON.parse(localStorage.getItem("user"));
+            const profileDiv = document.getElementById("userProfile");
+
+            if (user) {
+                profileDiv.innerHTML = `
+                    <img src="${user.picture}" class="w-10 h-10 rounded-full border" />
+                    <span class="font-medium text-gray-700">Hi, ${user.name}</span>
+                    <button onclick="logout()" 
+                        class="bg-red-500 text-white px-3 py-1 rounded">
+                        Logout
+                    </button>
+                `;
+
+                const googleBtn = document.querySelector(".g_id_signin");
+                if (googleBtn) googleBtn.style.display = "none";
+            }
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem("user");
+            location.reload();
+        }
+
+        // Open book only if logged in
+        function openBook(bookUrl) {
+            const user = JSON.parse(localStorage.getItem("user"));
+            if (!user) {
+                alert("Please login with Google first to read this book.");
+                return;
+            }
+            window.open(bookUrl, "_blank");
+        }
+
+        // Auto-load profile if logged in
+        showUserProfile();
+    </script>
+      <!-- Features Section -->
     <section id="features" class="py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
@@ -323,54 +370,9 @@
 
 </body>
 </html>
-        // Handle Google login response
-        function handleCredentialResponse(response) {
-            const data = JSON.parse(atob(response.credential.split('.')[1]));
-            localStorage.setItem("user", JSON.stringify(data));
-            showUserProfile();
-        }
-
-        // Show user profile in navbar
-        function showUserProfile() {
-            const user = JSON.parse(localStorage.getItem("user"));
-            const profileDiv = document.getElementById("userProfile");
-
-            if (user) {
-                profileDiv.innerHTML = `
-                    <img src="${user.picture}" class="w-10 h-10 rounded-full border" />
-                    <span class="font-medium text-gray-700">Hi, ${user.name}</span>
-                    <button onclick="logout()" 
-                        class="bg-red-500 text-white px-3 py-1 rounded">
-                        Logout
-                    </button>
-                `;
-
-                const googleBtn = document.querySelector(".g_id_signin");
-                if (googleBtn) googleBtn.style.display = "none";
-            }
-        }
-
-        // Logout function
-        function logout() {
-            localStorage.removeItem("user");
-            location.reload();
-        }
-
-        // Open book only if logged in
-        function openBook(bookUrl) {
-            const user = JSON.parse(localStorage.getItem("user"));
-            if (!user) {
-                alert("Please login with Google first to read this book.");
-                return;
-            }
-            window.open(bookUrl, "_blank");
-        }
-
-        // Auto-load profile if logged in
-        showUserProfile();
-    </script>
 </body>
 </html>
+
 
 
 
